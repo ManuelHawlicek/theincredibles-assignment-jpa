@@ -43,17 +43,12 @@ public class StockService {
                 String industryName = lineSplit.get(3);
                 Company company = new Company(companyName);
                 Industry industry = new Industry(industryName);
-                companyRepository.save(company);
-                industryRepository.save(industry);
-
-//                String priceWithComma = lineSplit.get(1);
-//                String priceWithEuro = priceWithComma.replace(",", ".");
-//                double price = Double.parseDouble(priceWithEuro.replace("€", ""));
-//                LocalDate date = LocalDate.parse(lineSplit.get(2), DateTimeFormatter.ofPattern("dd.MM.yy"));
-//
-//                Stock stock = new Stock(companyName, company, price, date, industry);
-//                stockRepository.save(stock);
-
+                if (!companyRepository.existsByName(company.getName())) {
+                    companyRepository.save(company);
+                }
+                if (!industryRepository.existsByName(industry.getName())) {
+                    industryRepository.save(industry);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();

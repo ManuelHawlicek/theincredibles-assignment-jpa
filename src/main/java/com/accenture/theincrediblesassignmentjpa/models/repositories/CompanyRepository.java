@@ -19,4 +19,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     List<Company> findByNameContaining(String name);
 
     Optional<Company> findFirstByName(String companyName);
+
+    boolean existsByName(String name);
 }

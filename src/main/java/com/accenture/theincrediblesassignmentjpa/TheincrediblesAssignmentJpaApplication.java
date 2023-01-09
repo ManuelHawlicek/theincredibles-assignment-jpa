@@ -4,6 +4,7 @@ import com.accenture.theincrediblesassignmentjpa.commandos.*;
 import com.accenture.theincrediblesassignmentjpa.commandos.company.SearchCommando;
 import com.accenture.theincrediblesassignmentjpa.commandos.database.DeleteCommando;
 import com.accenture.theincrediblesassignmentjpa.commandos.database.ImportCommando;
+import com.accenture.theincrediblesassignmentjpa.commandos.industry.IndustryCommando;
 import com.accenture.theincrediblesassignmentjpa.models.repositories.CompanyRepository;
 import com.accenture.theincrediblesassignmentjpa.models.repositories.IndustryRepository;
 import com.accenture.theincrediblesassignmentjpa.models.repositories.StockRepository;
@@ -48,7 +49,7 @@ public class TheincrediblesAssignmentJpaApplication implements CommandLineRunner
 //        Commando lowCommando = new LowCommando();
 //        Commando gapCommando = new GapCommando();
 //        Commando updateIndustryCommando = new UpdateIndustryCommando();
-        Commando industriesCommando = new IndustryCommando(scanner, stockRepository, industryRepository);
+        Commando industriesCommando = new IndustryCommando(industryRepository);
         Commando exitCommando = new ExitCommando();
 
         List<Commando> commandos = new ArrayList<>();

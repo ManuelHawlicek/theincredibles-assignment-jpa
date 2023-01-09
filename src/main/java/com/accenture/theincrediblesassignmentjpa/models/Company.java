@@ -12,7 +12,7 @@ public class Company {
     private Long id;
 
     @Size(max = 100)
-    @Column(name = "name", length = 100)
+    @Column(name = "name", length = 100, unique = true)
     private String name;
 
     public Company() {

@@ -15,5 +15,10 @@ public interface IndustryRepository extends JpaRepository<Industry, Long> {
     @Query(value = "ALTER TABLE industry AUTO_INCREMENT = 1", nativeQuery = true)
     void resetAutoIncrement();
 
+    @Query(value = "select count(*) as total from stock where industry_id = ?1", nativeQuery = true)
+    Integer countIndustries(Long industry_id);
+
     Optional<Industry> findFirstByName(String industryName);
+
+    boolean existsByName(String name);
 }
