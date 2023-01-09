@@ -1,10 +1,6 @@
 package com.accenture.theincrediblesassignmentjpa;
 
 import com.accenture.theincrediblesassignmentjpa.commandos.*;
-import com.accenture.theincrediblesassignmentjpa.commandos.company.SearchCommando;
-import com.accenture.theincrediblesassignmentjpa.commandos.database.DeleteCommando;
-import com.accenture.theincrediblesassignmentjpa.commandos.database.ImportCommando;
-import com.accenture.theincrediblesassignmentjpa.commandos.industry.IndustryCommando;
 import com.accenture.theincrediblesassignmentjpa.models.repositories.CompanyRepository;
 import com.accenture.theincrediblesassignmentjpa.models.repositories.IndustryRepository;
 import com.accenture.theincrediblesassignmentjpa.models.repositories.StockRepository;
@@ -13,7 +9,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,13 +18,15 @@ public class TheincrediblesAssignmentJpaApplication implements CommandLineRunner
     private final StockRepository stockRepository;
     private final CompanyRepository companyRepository;
     private final StockService stockService;
+    private final CommandoListFactory factory;
 
     public TheincrediblesAssignmentJpaApplication(IndustryRepository industryRepository, StockRepository stockRepository,
-                                                  CompanyRepository companyRepository, StockService stockService) {
+                                                  CompanyRepository companyRepository, StockService stockService, CommandoListFactory factory) {
         this.industryRepository = industryRepository;
         this.stockRepository = stockRepository;
         this.companyRepository = companyRepository;
         this.stockService = stockService;
+        this.factory = factory;
     }
 
     public static void main(String[] args) {
@@ -40,43 +37,33 @@ public class TheincrediblesAssignmentJpaApplication implements CommandLineRunner
     @Override
     public void run(String... args) throws Exception {
         Scanner scanner = new Scanner(System.in);
-        Commando importCommando = new ImportCommando(stockRepository, stockService);
-        Commando deleteCommando = new DeleteCommando(stockRepository, companyRepository, industryRepository);
-        Commando searchCommando = new SearchCommando(companyRepository, scanner);
-        Commando showCommando = new ShowCommando(scanner, stockRepository);
-//        Commando addCommando = new AddCommando();
-//        Commando maxCommando = new MaxCommando();
-//        Commando lowCommando = new LowCommando();
-//        Commando gapCommando = new GapCommando();
-//        Commando updateIndustryCommando = new UpdateIndustryCommando();
-        Commando industriesCommando = new IndustryCommando(industryRepository);
-        Commando exitCommando = new ExitCommando();
+        List<Commando> commandos = factory.loadCommandoList();
+        List<CommandoWithParams> commandosWithParameters = factory.loadCommandoWithParamsList();
 
-        List<Commando> commandos = new ArrayList<>();
-        commandos.add(importCommando);
-        commandos.add(deleteCommando);
-        commandos.add(searchCommando);
-        commandos.add(showCommando);
-        commandos.add(industriesCommando);
-        commandos.add(exitCommando);
+        System.out.println("Welcome to the International Stock Analysis-App");
 
         boolean shouldRun = true;
-        while(shouldRun) {
-            System.out.println("Hello User! Thank you for using our Service. What Command would you like to use?");
+        while (shouldRun) {
+            System.out.println("Hello User, what would you like to do?");
 
             String userCommando = scanner.nextLine();
             System.out.println("You wrote: " + userCommando);
 
-            for (Commando commando : commandos) {
-//                if (userCommando.startsWith("show")) {
-//                    List<String> stringSplit = List.of(userCommando.split(" "));
-//                    shouldRun = commando.executeWithParameter(stringSplit.get(1));
-//                }
-                if (commando.shouldExecute(userCommando)) {
-                    shouldRun = commando.execute();
+            List<String> userCommandoSplit = List.of(userCommando.split(" ", -1));
+            if (userCommandoSplit.size() > 1) {
+                for (CommandoWithParams commandoWithParams : commandosWithParameters) {
+                    if (commandoWithParams.shouldExecute(userCommandoSplit.get(0))) {
+                        shouldRun = commandoWithParams.execute(userCommando);
+                    }
+                }
+
+            } else {
+                for (Commando commando : commandos) {
+                    if (commando.shouldExecute(userCommando)) {
+                        shouldRun = commando.execute();
+                    }
                 }
             }
         }
-
     }
 }

@@ -1,5 +1,6 @@
 package com.accenture.theincrediblesassignmentjpa.service;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.accenture.theincrediblesassignmentjpa.models.Company;
 import com.accenture.theincrediblesassignmentjpa.models.Industry;
 import com.accenture.theincrediblesassignmentjpa.models.Stock;
@@ -7,13 +8,11 @@ import com.accenture.theincrediblesassignmentjpa.models.repositories.CompanyRepo
 import com.accenture.theincrediblesassignmentjpa.models.repositories.IndustryRepository;
 import com.accenture.theincrediblesassignmentjpa.models.repositories.StockRepository;
 import com.accenture.theincrediblesassignmentjpa.utils.FileReader;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.stereotype.Service;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +27,26 @@ public class StockService {
         this.stockRepository = stockRepository;
         this.companyRepository = companyRepository;
         this.industryRepository = industryRepository;
+    }
+
+    public void updateIndustryInStock(String id, String industryName) {
+        try {
+            long stockId = Long.parseLong(id);
+            Optional<Stock> stock = stockRepository.findById(stockId);
+            System.out.println("hier1");
+            if (stock.isPresent()) {
+                Optional<Industry> industry = industryRepository.findFirstByName(industryName);
+                System.out.println("hier2");
+                if (industry.isPresent()) {
+                    stock.get().setIndustry(industry.get());
+                    System.out.println("hier3");
+                    stockRepository.save(stock.get());
+                }
+            }
+
+        }catch (NumberFormatException numberFormatException) {
+                numberFormatException.printStackTrace();
+            }
     }
 
     public void importCompanyIndustryData() {
@@ -81,5 +100,105 @@ public class StockService {
             Stock stock = new Stock(companyName, oCompany.get(), price, date, oIndustry.get());
             stockRepository.save(stock);
         }
+    }
+
+    public void showStockLastTenPrices(String userInput) {
+        List<String> userInputSplit = List.of(userInput.split(" ", -1));
+        try {
+            long companyId = Long.parseLong(userInputSplit.get(1));
+            List<Stock> stockList = stockRepository.findAllByCompanyId(companyId);
+            System.out.println("The last prices for the specified Stock with ID: " + companyId + " are: ");
+            stockList.stream()
+                    .map(e -> e.getPrice())
+                    .limit(10)
+                    .forEach(System.out::println);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    public void showStockHighestPrice(String userInput) {
+        List<String> userInputSplit = List.of(userInput.split(" ", -1));
+        try {
+            long companyId = Long.parseLong(userInputSplit.get(1));
+            List<Stock> stockList = stockRepository.findAllByCompanyId(companyId);
+            Optional<Double> oDouble = stockList.stream()
+                    .map(e -> e.getPrice())
+                    .max(Comparator.comparing(Double::doubleValue));
+            if (oDouble.isPresent()) {
+                System.out.println("The highest price for the specified Stock with ID " + companyId + " is: " + oDouble.get());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void showStockLowestPrice(String userInput) {
+        List<String> userInputSplit = List.of(userInput.split(" ", -1));
+        try {
+            long companyId = Long.parseLong(userInputSplit.get(1));
+            List<Stock> stockList = stockRepository.findAllByCompanyId(companyId);
+            Optional<Double> oDouble = stockList.stream()
+                    .map(e -> e.getPrice())
+                    .min(Comparator.comparing(Double::doubleValue));
+            if (oDouble.isPresent()) {
+                System.out.println("The highest price for the specified Stock with ID " + companyId + " is: " + oDouble.get());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showStockGap(String userInput) {
+        List<String> userInputSplit = List.of(userInput.split(" ", -1));
+        try {
+            long companyId = Long.parseLong(userInputSplit.get(1));
+            List<Stock> stockList = stockRepository.findAllByCompanyId(companyId);
+            Optional<Double> oDoubleLowest = stockList.stream()
+                    .map(e -> e.getPrice())
+                    .min(Comparator.comparing(Double::doubleValue));
+
+            Optional<Double> oDoubleHighest = stockList.stream()
+                    .map(e -> e.getPrice())
+                    .max(Comparator.comparing(Double::doubleValue));
+            if (oDoubleHighest.isPresent() && oDoubleLowest.isPresent()) {
+                Double priceGap = oDoubleHighest.get() - oDoubleLowest.get();
+                if (!(priceGap == 0.0)) {
+                    System.out.println("The biggest difference in prices for the specified Stock with ID " + companyId + " was: " + priceGap);
+                } else {
+                    System.out.println("We only have one saved Stock in our Database, so there is no gap");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void addStock(String userInput) {
+        List<String> userInputSplit = List.of(userInput.split(" ", -1));
+        long stockId = Long.parseLong(userInputSplit.get(1));
+        Optional<Stock> oStock = stockRepository.findById(stockId);
+        double price = Double.parseDouble(userInputSplit.get(3).replace(",", "."));
+        LocalDate date = LocalDate.parse(userInputSplit.get(2), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        if (oStock.isPresent()) {
+            Stock stock = oStock.get();
+            Stock addStock = new Stock(stock.getCompanyName(),
+                    stock.getCompany(),
+                    price,
+                    date,
+                    stock.getIndustry() );
+            stockRepository.save(addStock);
+        }
+    }
+
+    public void deleteAllData() {
+        stockRepository.deleteAll();
+        stockRepository.resetAutoIncrement();
+        companyRepository.deleteAll();
+        companyRepository.resetAutoIncrement();
+        industryRepository.deleteAll();
+        industryRepository.resetAutoIncrement();
     }
 }

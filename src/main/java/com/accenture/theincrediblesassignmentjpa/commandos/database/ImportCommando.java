@@ -8,11 +8,9 @@ import java.sql.SQLException;
 
 public class ImportCommando implements Commando {
 
-    private StockRepository stockRepository;
     private StockService stockService;
 
-    public ImportCommando(StockRepository stockRepository, StockService stockService) {
-        this.stockRepository = stockRepository;
+    public ImportCommando(StockService stockService) {
         this.stockService = stockService;
     }
 
