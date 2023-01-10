@@ -1,6 +1,5 @@
 package com.accenture.theincrediblesassignmentjpa.service;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
 import com.accenture.theincrediblesassignmentjpa.models.Company;
 import com.accenture.theincrediblesassignmentjpa.models.Industry;
 import com.accenture.theincrediblesassignmentjpa.models.Stock;

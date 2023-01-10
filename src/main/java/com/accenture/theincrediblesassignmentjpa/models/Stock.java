@@ -19,7 +19,7 @@ public class Stock {
     @Column(name = "companyName", length = 100)
     private String companyName;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "company_id")
     private Company company;
 
@@ -29,7 +29,7 @@ public class Stock {
     @Column(name = "dateofprice")
     private LocalDate dateofprice;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "industry_id")
     private Industry industry;
 

@@ -3,10 +3,8 @@ package com.accenture.theincrediblesassignmentjpa.commandos.industry;
 import com.accenture.theincrediblesassignmentjpa.commandos.Commando;
 import com.accenture.theincrediblesassignmentjpa.models.Industry;
 import com.accenture.theincrediblesassignmentjpa.models.repositories.IndustryRepository;
-import com.accenture.theincrediblesassignmentjpa.models.repositories.StockRepository;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class IndustryCommando implements Commando {
 
