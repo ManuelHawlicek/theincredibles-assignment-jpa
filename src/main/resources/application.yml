@@ -5,10 +5,9 @@ spring:
   datasource:
     url: jdbc:mysql://localhost/theincredibles-assignment-jpa?useSSL=false
     username: root
-    password: root
+    password: secret
   jpa:
     hibernate:
       ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-paths:

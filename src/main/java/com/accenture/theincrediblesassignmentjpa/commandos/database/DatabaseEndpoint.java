@@ -22,7 +22,7 @@ public class DatabaseEndpoint {
         return "Data has been imported";
     }
 
-    @DeleteMapping("delete")
+    @DeleteMapping("/delete")
     String deleteAllData() {
         stockService.deleteAllData();
         return "Data has been deleted.";

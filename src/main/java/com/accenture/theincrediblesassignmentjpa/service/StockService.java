@@ -116,7 +116,7 @@ public class StockService {
         }
 
     }
-    public void showStockHighestPrice(String userInput) {
+    public Double showStockHighestPrice(String userInput) {
         List<String> userInputSplit = List.of(userInput.split(" ", -1));
         try {
             long companyId = Long.parseLong(userInputSplit.get(1));
@@ -126,14 +126,15 @@ public class StockService {
                     .max(Comparator.comparing(Double::doubleValue));
             if (oDouble.isPresent()) {
                 System.out.println("The highest price for the specified Stock with ID " + companyId + " is: " + oDouble.get());
+                return oDouble.get();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return null;
     }
 
-    public void showStockLowestPrice(String userInput) {
+    public Double showStockLowestPrice(String userInput) {
         List<String> userInputSplit = List.of(userInput.split(" ", -1));
         try {
             long companyId = Long.parseLong(userInputSplit.get(1));
@@ -142,14 +143,16 @@ public class StockService {
                     .map(e -> e.getPrice())
                     .min(Comparator.comparing(Double::doubleValue));
             if (oDouble.isPresent()) {
-                System.out.println("The highest price for the specified Stock with ID " + companyId + " is: " + oDouble.get());
+                System.out.println("The lowest price for the specified Stock with ID " + companyId + " is: " + oDouble.get());
+                return oDouble.get();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    public void showStockGap(String userInput) {
+    public Double showStockGap(String userInput) {
         List<String> userInputSplit = List.of(userInput.split(" ", -1));
         try {
             long companyId = Long.parseLong(userInputSplit.get(1));
@@ -165,6 +168,7 @@ public class StockService {
                 Double priceGap = oDoubleHighest.get() - oDoubleLowest.get();
                 if (!(priceGap == 0.0)) {
                     System.out.println("The biggest difference in prices for the specified Stock with ID " + companyId + " was: " + priceGap);
+                    return priceGap;
                 } else {
                     System.out.println("We only have one saved Stock in our Database, so there is no gap");
                 }
@@ -172,10 +176,10 @@ public class StockService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return null;
     }
 
-    public void addStock(String userInput) {
+    public Stock addStock(String userInput) {
         List<String> userInputSplit = List.of(userInput.split(" ", -1));
         long stockId = Long.parseLong(userInputSplit.get(1));
         Optional<Stock> oStock = stockRepository.findById(stockId);
@@ -189,7 +193,10 @@ public class StockService {
                     date,
                     stock.getIndustry() );
             stockRepository.save(addStock);
+            System.out.println("New Stock has been saved.");
+            return addStock;
         }
+        return null;
     }
 
     public void deleteAllData() {

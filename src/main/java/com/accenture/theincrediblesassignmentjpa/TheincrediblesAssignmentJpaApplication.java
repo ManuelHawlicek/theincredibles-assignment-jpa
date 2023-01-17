@@ -1,10 +1,6 @@
 package com.accenture.theincrediblesassignmentjpa;
 
 import com.accenture.theincrediblesassignmentjpa.commandos.*;
-import com.accenture.theincrediblesassignmentjpa.models.repositories.CompanyRepository;
-import com.accenture.theincrediblesassignmentjpa.models.repositories.IndustryRepository;
-import com.accenture.theincrediblesassignmentjpa.models.repositories.StockRepository;
-import com.accenture.theincrediblesassignmentjpa.service.StockService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,20 +10,12 @@ import java.util.Scanner;
 
 @SpringBootApplication
 public class TheincrediblesAssignmentJpaApplication implements CommandLineRunner {
-    private final IndustryRepository industryRepository;
-    private final StockRepository stockRepository;
-    private final CompanyRepository companyRepository;
-    private final StockService stockService;
     private final CommandoListFactory factory;
 
-    public TheincrediblesAssignmentJpaApplication(IndustryRepository industryRepository, StockRepository stockRepository,
-                                                  CompanyRepository companyRepository, StockService stockService, CommandoListFactory factory) {
-        this.industryRepository = industryRepository;
-        this.stockRepository = stockRepository;
-        this.companyRepository = companyRepository;
-        this.stockService = stockService;
+    public TheincrediblesAssignmentJpaApplication(CommandoListFactory factory) {
         this.factory = factory;
     }
+
 
     public static void main(String[] args) {
         SpringApplication.run(TheincrediblesAssignmentJpaApplication.class, args);
